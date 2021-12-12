@@ -30,7 +30,7 @@ No time for them
 
 I've created two directorires 
 
-1- the module itself with all the resources needs 
+1- the module itself with the requested resources 
 
 2- usages TF file to plan/apply 
 
