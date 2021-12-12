@@ -1,0 +1,48 @@
+# The base container that will be created by Gitlab k8s executor runner
+image: docker:dind
+
+# Setting up the variables needs to use dind container inside k8s cluster
+variables:
+  DOCKER_HOST: tcp://localhost:2375 
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_DRIVER: overlay2
+  KUBECONFIG_PATH: /root/.kube/config
+
+# this scripts runs only in build stage and before any other scripts 
+# and it's logging to the dockerhub registry
+.before_script_template: &build
+  before_script:
+    - docker login -u <dockerhub username> -p <dockerhub password>
+
+stages:
+  - build
+  - deploy
+
+# Build stage to build the docker image and push it to the registry 
+build-image:
+  stage: build
+  <<: *build
+  script:
+    - docker build -t alizandieh2019/litecoin:0.18.1 .
+    - docker push alizandieh2019/litecoin:0.18.1
+# run only on master branch
+  only:
+    - master    
+# Assuming our k8s runner has got a tag "kubernetes"
+  tags:
+    - kubernetes 
+
+# Deploy stage will be run in another image which has got Kubectl installed in it. 
+# Assuming the k8s config file is stored in a Gitlab variable $KUBE_CONF
+# it place the kube config file to the right directory and the applies our Statefulset
+development:
+  image: bitnami/kubectl
+  stage: deploy
+  script:
+    - echo $KUBE_CONF > $KUBECONFIG_PATH
+    - kubectl apply -f statefulset.yaml
+  only:
+    - master
+  tags:
+    - kubernetes 
+
