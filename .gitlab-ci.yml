@@ -21,6 +21,7 @@ stages:
 # Build stage to build the docker image and push it to the registry 
 build-image:
   stage: build
+# running before_script here
   <<: *build
   script:
     - docker build -t alizandieh2019/litecoin:0.18.1 .
@@ -34,7 +35,7 @@ build-image:
 
 # Deploy stage will be run in another image which has got Kubectl installed in it. 
 # Assuming the k8s config file is stored in a Gitlab variable $KUBE_CONF
-# it place the kube config file to the right directory and the applies our Statefulset
+# it place the kube config file to the right directory and applies our Statefulset
 development:
   image: bitnami/kubectl
   stage: deploy

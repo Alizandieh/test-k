@@ -45,3 +45,4 @@ spec:
       resources:
         requests:
           storage: 50Mi
+# didn't mention StorageClass here to use the default StorageClass in the cluster

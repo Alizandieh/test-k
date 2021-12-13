@@ -32,5 +32,5 @@ I've created two directorires
 
 1- the module itself with the requested resources 
 
-2- usages TF file to plan/apply 
+2- usage TF files to plan/apply 
 
